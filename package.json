@@ -6,7 +6,9 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "heroku:stop": "heroku ps:scale web=0",
+    "heroku:start": "heroku ps:scale web=1"
   },
   "dependencies": {
     "debug": "^4.1.1",
