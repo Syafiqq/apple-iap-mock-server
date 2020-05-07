@@ -1,7 +1,8 @@
 module.exports = {
     port: process.env.PORT,
     apple: {
-        shared_password: process.env.APPLE_SHARED_PASSWORD,
+        shared_password_parent: process.env.APPLE_SHARED_PASSWORD_PARENT,
+        shared_password_student: process.env.APPLE_SHARED_PASSWORD_STUDENT,
     },
     firebase: {
         apiKey: process.env.FIREBASE_API_KEY,

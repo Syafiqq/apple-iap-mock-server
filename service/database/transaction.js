@@ -1,4 +1,4 @@
-const { firebase } = require('../../firebase.js');
+const { firebase } = require('../../firebase');
 
 const insertTransaction = async (subject_id, transaction) => {
     try {

@@ -1,3 +1,5 @@
+const diffUtil = require('../../diff-util')
+
 const createTransaction = (student_id, subject_id, subscription_plan_id, receipt_data, transaction) => {
     return {
         student_id,
@@ -20,7 +22,20 @@ const updateTransaction = (saved_transaction, transaction, receipt_data) => {
     }
 }
 
+const diffTransaction = (transaction1, transaction2) => {
+    return diffUtil.performDiff(transaction1, transaction2, [
+        'student_id',
+        'subject_id',
+        'subscription_plan_id',
+        'original_transaction_id',
+        'receipt_data',
+        'expires_date',
+        'purchase_date_ms',
+    ])
+}
+
 module.exports = {
     createTransaction,
     updateTransaction,
+    diffTransaction,
 }

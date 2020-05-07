@@ -1,11 +1,11 @@
 const express = require('express');
 const logger = require('morgan');
-const appleApi = require('./api/apple/verify-receipt.js')
-const concurrentUtil = require('./concurent-util.js');
+const appleApi = require('./api/apple/verify-receipt')
+const concurrentUtil = require('./concurent-util');
 const formData = require('./express-form-config');
-const logHelper = require('./logging.js');
-const baseResponse = require('./model/base-response.js');
-const functionTransaction = require('./function/transaction.js');
+const logHelper = require('./logging');
+const baseResponse = require('./model/base-response');
+const functionTransaction = require('./function/transaction');
 
 const app = express();
 
@@ -64,13 +64,13 @@ app.post('/verify', async (req, res) => {
     const savedTransaction = await functionTransaction.loadTransactionByTransactionOriginal(transaction.original_transaction_id)
 
     // 4.a. if savedTransaction exists and new transaction is future update that transaction
-    if (savedTransaction && functionTransaction.isNewTransactionFuture(savedTransaction, transaction)) {
+    if (savedTransaction && functionTransaction.isTransactionFuture(savedTransaction, transaction)) {
         await functionTransaction.updateTransaction(savedTransaction, transaction, body.receipt_data)
         return await res.json(baseResponse.successWithMessage('Transaction is success'))
     }
 
     // 4.b. if savedTransaction exists but transaction is older do nothing
-    if (savedTransaction && !functionTransaction.isNewTransactionFuture(savedTransaction, transaction)) {
+    if (savedTransaction && !functionTransaction.isTransactionFuture(savedTransaction, transaction)) {
         return await res.json(baseResponse.successWithMessage('Transaction is success'))
     }
 
