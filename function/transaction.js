@@ -4,6 +4,7 @@ const serviceDebug = require('../service/database/debug')
 const serviceTransaction = require('../service/database/transaction')
 const serviceTransactionMapper = require('../service/database/transaction-mapper')
 const { diffTransaction } = require('../model/database/transaction')
+const _ = require('lodash')
 
 const parseProductId = product_id => {
     const parsedProductId = product_id.split('.')
@@ -36,7 +37,7 @@ const saveTransaction = async (student_id, receipt_data, transaction) => {
 
 const loadTransactionByTransactionOriginal = async transaction_id => {
     // 1. Get Student Id
-    const mapper = await serviceTransactionMapper.getStudentIdByOriginalTransaction(transaction_id)
+    const mapper = await serviceTransactionMapper.getMapperByTransaction(transaction_id)
 
     if (!mapper) {
         return null
@@ -67,9 +68,24 @@ const updateTransaction = async (saved_transaction, transaction, receipt_data) =
 
 const isTransactionFuture = (saved_transaction, transaction) => Number(transaction.purchase_date_ms) > Number(saved_transaction.purchase_date_ms)
 
+const loadAllTransaction = async () => {
+    // 1. Get Student Id
+    const mapper = await serviceTransactionMapper.getAllMapper()
+
+    if (!mapper) {
+        return null
+    }
+
+    // 2. Get Transaction
+    return await Promise.all(_.map(mapper, async value => {
+        return await serviceTransaction.getTransaction(value.student_id, value.subject_id)
+    }));
+}
+
 module.exports = {
     saveTransaction,
     loadTransactionByTransactionOriginal,
     updateTransaction,
     isTransactionFuture,
+    loadAllTransaction,
 }

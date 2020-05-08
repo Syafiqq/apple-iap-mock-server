@@ -196,3 +196,11 @@ tmp/
 temp/
 
 # End of https://www.gitignore.io/api/node,jetbrains+all
+files/http/
+test/
+files/
+cmd/
+patches/
+files
+cmd
+patches

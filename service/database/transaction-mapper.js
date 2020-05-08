@@ -9,12 +9,18 @@ const insertMapper = async transaction => {
     }
 }
 
-const getStudentIdByOriginalTransaction = async original_transaction_id => {
+const getMapperByTransaction = async original_transaction_id => {
     const snapshot = await firebase.database().ref(`/transaction_student_mapper/${original_transaction_id}`).once('value')
+    return snapshot.val()
+}
+
+const getAllMapper = async () => {
+    const snapshot = await firebase.database().ref(`/transaction_student_mapper`).once('value')
     return snapshot.val()
 }
 
 module.exports = {
     insertMapper,
-    getStudentIdByOriginalTransaction
+    getMapperByTransaction,
+    getAllMapper,
 }

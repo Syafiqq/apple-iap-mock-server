@@ -8,40 +8,34 @@ const URL_SANDBOX = 'https://buy.itunes.apple.com/verifyReceipt'
 const PASSWORD_PARENT = config.apple.shared_password_parent
 const PASSWORD_STUDENT = config.apple.shared_password_student
 
-const _verifyReceipt = async (url, password, receipt, excludeOld = false) => {
+const _verifyReceipt = async (receipt, excludeOld = false) => {
     try {
-        const response = await axios.post(url, {
-            'receipt-data': receipt,
-            'exclude-old-transactions': excludeOld,
-            'password': password
-        });
-        if (response.status === 200 && response.data) {
-            if(response.data.status !== undefined) {
-                switch (response.data.status) {
-                    case responseCode.SHARED_SECRET_MISMATCH:
-                        return await _verifyReceipt(url, password === PASSWORD_STUDENT ? PASSWORD_PARENT : PASSWORD_STUDENT, receipt, excludeOld)
-                    case responseCode.RECEIPT_FOR_PRODUCTION:
-                        return await _verifyReceipt(URL_PRODUCTION, password, receipt, excludeOld)
-                    case responseCode.RECEIPT_FOR_SANDBOX:
-                        return await _verifyReceipt(URL_SANDBOX, password, receipt, excludeOld)
-                    case responseCode.SUCCESS:
-                        console.log(response.data);
-                        return response.data;
-                    default:
-                        break;
-                }
-            }
-        }
-        console.error(response.data);
-        return null
-    } catch (error) {
+        const requests = [];
+        [URL_PRODUCTION, URL_SANDBOX].forEach(url => {
+            [PASSWORD_PARENT, PASSWORD_STUDENT].forEach(password => {
+                requests.push(axios.post(url, {
+                    'receipt-data': receipt,
+                    'exclude-old-transactions': excludeOld,
+                    'password': password
+                }))
+            })
+        })
+
+        const responses = await axios.all(requests)
+        return _.chain(responses)
+            .filter(response => response.status === 200 && response.data && response.data.status === responseCode.SUCCESS)
+            .map('data')
+            .head()
+            .value()
+    }
+    catch (error) {
         console.error(error);
         return null
     }
 }
 
 const verifyReceipt = async (receipt, excludeOld = false) => {
-    return await _verifyReceipt(URL_PRODUCTION, PASSWORD_STUDENT, receipt, excludeOld)
+    return await _verifyReceipt(receipt, excludeOld)
 }
 
 const getInAppReceiptTransaction = (transactions, transaction_id) => {
@@ -53,7 +47,22 @@ const getInAppReceiptTransaction = (transactions, transaction_id) => {
     }
 }
 
+const getTransactionByOriginalTransactionId = (transactions, original_transaction_id) => {
+    const filtered = _.filter(transactions, { original_transaction_id: original_transaction_id })
+    return filtered || []
+}
+
+const getLatestExpiredTransaction = transactions => {
+    return _
+        .chain(transactions)
+        .orderBy(['expires_date_ms'], ['desc'])
+        .head()
+        .value()
+}
+
 module.exports = {
     verifyReceipt,
     getInAppReceiptTransaction,
+    getTransactionByOriginalTransactionId,
+    getLatestExpiredTransaction,
 }
