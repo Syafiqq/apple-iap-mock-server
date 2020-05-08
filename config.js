@@ -12,5 +12,8 @@ module.exports = {
         storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
         messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
         appId: process.env.FIREBASE_APP_ID,
+    },
+    googleCloud: {
+        privateKey: JSON.parse(process.env.GOOGLE_CLOUD_STORAGE_PRIVATE_KEY)
     }
 };

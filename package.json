@@ -12,6 +12,7 @@
     "heroku:start": "heroku ps:scale web=1"
   },
   "dependencies": {
+    "@google-cloud/storage": "^4.7.0",
     "axios": "^0.19.2",
     "date-fns": "^2.13.0",
     "debug": "^4.1.1",
@@ -19,7 +20,8 @@
     "express-form-data": "^2.0.12",
     "firebase": "^7.14.2",
     "lodash": "^4.17.15",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "uuid": "^8.0.0"
   },
   "devDependencies": {
     "dotenv": "^8.2.0",

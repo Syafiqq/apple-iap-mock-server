@@ -6,6 +6,7 @@ const formData = require('./express-form-config');
 const logHelper = require('./logging');
 const baseResponse = require('./model/base-response');
 const functionTransaction = require('./function/transaction');
+const functionS2S = require('./function/server2server');
 
 const app = express();
 
@@ -27,12 +28,12 @@ app.post('/verify', async (req, res) => {
     logHelper.logRequest(req)
     let body = req.body
     // Check required parameter, the others are optional
-    if(!body.receipt_data || !body.transaction_id) {
+    if(!body.purchase_receipt || !body.transaction_id) {
         return await res.json(baseResponse.errorWithMessage('Missing parameter'))
     }
 
     // 0. Verify receipt to apple
-    const response = await appleApi.verifyReceipt(body.receipt_data, false)
+    const response = await appleApi.verifyReceipt(body.purchase_receipt, false)
 
     // 1. Check if response status is 0
     if(!response || response.status !== 0) {
@@ -56,7 +57,7 @@ app.post('/verify', async (req, res) => {
             return await res.json(baseResponse.errorWithMessage('Missing parameter'))
         }
 
-        await functionTransaction.saveTransaction(body.student_id, body.receipt_data, transaction)
+        await functionTransaction.saveTransaction(body.student_id, body.purchase_receipt, transaction)
         return await res.json(baseResponse.successWithMessage('Transaction is success'))
     }
 
@@ -65,7 +66,7 @@ app.post('/verify', async (req, res) => {
 
     // 4.a. if savedTransaction exists and new transaction is future update that transaction
     if (savedTransaction && functionTransaction.isTransactionFuture(savedTransaction, transaction)) {
-        await functionTransaction.updateTransaction(savedTransaction, transaction, body.receipt_data)
+        await functionTransaction.updateTransaction(savedTransaction, transaction, body.purchase_receipt)
         return await res.json(baseResponse.successWithMessage('Transaction is success'))
     }
 
@@ -79,7 +80,7 @@ app.post('/verify', async (req, res) => {
         return await res.json(baseResponse.errorWithMessage('Missing parameter'))
     }
 
-    await functionTransaction.saveTransaction(body.student_id, body.receipt_data, transaction)
+    await functionTransaction.saveTransaction(body.student_id, body.purchase_receipt, transaction)
     return await res.json(baseResponse.successWithMessage('Transaction is success'))
 })
 
@@ -123,6 +124,12 @@ app.post('/status-pooling', async (req, res) => {
             continue;
         }
     }
+    return await res.json(baseResponse.successWithMessage())
+})
+
+app.post('/s2s', async (req, res) => {
+    let body = req.body
+    await functionS2S.saveTransaction(body)
     return await res.json(baseResponse.successWithMessage())
 })
 
