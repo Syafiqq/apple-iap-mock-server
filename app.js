@@ -7,6 +7,7 @@ const logHelper = require('./logging');
 const baseResponse = require('./model/base-response');
 const functionTransaction = require('./function/transaction');
 const functionS2S = require('./function/server2server');
+const axios = require('axios');
 
 const app = express();
 
@@ -129,8 +130,33 @@ app.post('/status-pooling', async (req, res) => {
 
 app.post('/s2s', async (req, res) => {
     let body = req.body
+    let response = await axios.post(
+        'https://grc-1940-app.dev.geniebook.dev/webhook/iap_notification',
+        body,
+        {
+            headers: {
+                'Accept': '*/*',
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
+            }
+        })
+    body['geniebook-response'] = {
+        // `data` is the response that was provided by the server
+        data: response.data,
+
+        // `status` is the HTTP status code from the server response
+        status: response.status,
+
+        // `statusText` is the HTTP status message from the server response
+        statusText: response.statusText,
+
+        // `headers` the HTTP headers that the server responded with
+        // All header names are lower cased and can be accessed using the bracket notation.
+        // Example: `response.headers['content-type']`
+        headers: response.headers
+    }
     await functionS2S.saveTransaction(body)
-    return await res.json(baseResponse.successWithMessage())
+    return res.status(response.status).json({});
 })
 
 module.exports = app;
