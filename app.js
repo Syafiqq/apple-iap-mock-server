@@ -130,7 +130,7 @@ app.post('/status-pooling', async (req, res) => {
     return await res.json(baseResponse.successWithMessage())
 })
 
-app.post('/s2s', async (req, res) => {
+app.post('/s2s-gb', async (req, res) => {
     let body = req.body
     let response = await axios.post(
         'https://grc-1940-app.dev.geniebook.dev/webhook/iap_notification',
@@ -159,6 +159,12 @@ app.post('/s2s', async (req, res) => {
     }
     await functionS2S.saveTransaction(body)
     return res.status(response.status).json({});
+})
+
+app.post('/s2s', async (req, res) => {
+    let body = req.body
+    await functionS2S.saveTransaction(body)
+    return res.json(baseResponse.successWithMessage());
 })
 
 module.exports = app;
