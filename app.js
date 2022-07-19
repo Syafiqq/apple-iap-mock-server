@@ -9,6 +9,7 @@ const functionTransaction = require('./function/transaction');
 const functionS2S = require('./function/server2server');
 const axios = require('axios');
 const timeout = require('connect-timeout'); //express v4
+const config = require('./config')
 
 const app = express();
 
@@ -133,7 +134,7 @@ app.post('/status-pooling', async (req, res) => {
 app.post('/s2s-gb', async (req, res) => {
     let body = req.body
     let response = await axios.post(
-        'https://gblsfb-296-app.dev.geniebook.dev/webhook/iap_notification',
+        config.gb_url,
         body,
         {
             headers: {
