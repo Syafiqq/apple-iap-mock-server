@@ -133,7 +133,7 @@ app.post('/status-pooling', async (req, res) => {
 app.post('/s2s-gb', async (req, res) => {
     let body = req.body
     let response = await axios.post(
-        'https://grc-1940-app.dev.geniebook.dev/webhook/iap_notification',
+        'https://gblsfb-296-app.dev.geniebook.dev/webhook/iap_notification',
         body,
         {
             headers: {
