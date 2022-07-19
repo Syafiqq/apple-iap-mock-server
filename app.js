@@ -8,6 +8,7 @@ const baseResponse = require('./model/base-response');
 const functionTransaction = require('./function/transaction');
 const functionS2S = require('./function/server2server');
 const axios = require('axios');
+const timeout = require('connect-timeout'); //express v4
 
 const app = express();
 
@@ -16,6 +17,7 @@ const ALLOWED_BUNDLE_ID = [
     'beautyfulminds.GeniebookForParents'
 ]
 
+app.use(timeout(180000));
 app.use(logger('dev'));
 formData.configure(app)
 
