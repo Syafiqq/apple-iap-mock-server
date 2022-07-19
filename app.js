@@ -18,7 +18,7 @@ const ALLOWED_BUNDLE_ID = [
     'beautyfulminds.GeniebookForParents'
 ]
 
-app.use(timeout(180000));
+app.use(timeout(300000));
 app.use(logger('dev'));
 formData.configure(app)
 
