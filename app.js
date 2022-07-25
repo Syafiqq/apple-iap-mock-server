@@ -168,4 +168,9 @@ app.post('/s2s', async (req, res) => {
     return res.json(baseResponse.successWithMessage());
 })
 
+app.post('/s2s-no-action', async (req, res) => {
+    let body = req.body
+    return res.json(baseResponse.successWithMessage());
+})
+
 module.exports = app;
