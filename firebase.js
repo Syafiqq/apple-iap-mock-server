@@ -1,17 +1,19 @@
-const firebase = require('firebase/app');
-const config = require('./config')
+const { initializeApp } = require('firebase/app');
+const { getDatabase } = require('firebase/database');
+const { getAuth, signInAnonymously } = require('firebase/auth');
 const { Storage } = require('@google-cloud/storage');
-require('firebase/database');
-require('firebase/auth');
+const config = require('./config')
 
-const firebaseApp = firebase.initializeApp(config.firebase)
-firebase.auth().signInAnonymously()
+const firebaseApp = initializeApp(config.firebase)
+const auth = getAuth(firebaseApp)
+signInAnonymously(auth)
+const db = getDatabase(firebaseApp)
 const storage = new Storage({ credentials: config.googleCloud.privateKey })
 const bucket = storage.bucket(config.firebase.storageBucket)
 
 module.exports = {
     firebaseApp,
-    firebase,
+    db,
     storage,
     bucket,
 }

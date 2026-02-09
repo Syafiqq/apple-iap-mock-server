@@ -1,11 +1,11 @@
-const dateFormat = require('date-fns/format');
+const { format } = require('date-fns');
 const stream = require('stream')
 const { v4: uuidv4 } = require('uuid');
 const { bucket } = require('../../firebase')
 
 const insertRawS2S = async (s2s, now) => {
     try {
-        const date = dateFormat(now, 'dd-MM-yyyy HH:mm:ss')
+        const date = format(now, 'dd-MM-yyyy HH:mm:ss')
         const obj = {
             'db-date': date,
             ...s2s,
