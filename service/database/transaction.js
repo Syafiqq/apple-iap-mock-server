@@ -1,8 +1,9 @@
-const { firebase } = require('../../firebase');
+const { ref, set, get } = require('firebase/database');
+const { db } = require('../../firebase');
 
 const insertTransaction = async (subject_id, transaction) => {
     try {
-        await firebase.database().ref(`/transactions/${transaction.student_id}/${subject_id}`).set(transaction)
+        await set(ref(db, `/transactions/${transaction.student_id}/${subject_id}`), transaction)
     } catch (error) {
         console.error(error)
         return null
@@ -10,7 +11,7 @@ const insertTransaction = async (subject_id, transaction) => {
 }
 
 const getTransaction = async (student_id, subject_id) => {
-    const snapshot = await firebase.database().ref(`/transactions/${student_id}/${subject_id}`).once('value')
+    const snapshot = await get(ref(db, `/transactions/${student_id}/${subject_id}`))
     return snapshot.val()
 }
 

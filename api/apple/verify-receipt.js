@@ -21,7 +21,7 @@ const _verifyReceipt = async (receipt, excludeOld = false) => {
             })
         })
 
-        const responses = await axios.all(requests)
+        const responses = await Promise.all(requests)
         return _.chain(responses)
             .filter(response => response.status === 200 && response.data && response.data.status === responseCode.SUCCESS)
             .map('data')

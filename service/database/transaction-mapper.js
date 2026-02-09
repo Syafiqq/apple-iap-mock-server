@@ -1,8 +1,9 @@
-const { firebase } = require('../../firebase');
+const { ref, set, get } = require('firebase/database');
+const { db } = require('../../firebase');
 
 const insertMapper = async transaction => {
     try {
-        await firebase.database().ref(`/transaction_student_mapper/${transaction.original_transaction_id}`).set(transaction)
+        await set(ref(db, `/transaction_student_mapper/${transaction.original_transaction_id}`), transaction)
     } catch (error) {
         console.error(error)
         return null
@@ -10,12 +11,12 @@ const insertMapper = async transaction => {
 }
 
 const getMapperByTransaction = async original_transaction_id => {
-    const snapshot = await firebase.database().ref(`/transaction_student_mapper/${original_transaction_id}`).once('value')
+    const snapshot = await get(ref(db, `/transaction_student_mapper/${original_transaction_id}`))
     return snapshot.val()
 }
 
 const getAllMapper = async () => {
-    const snapshot = await firebase.database().ref(`/transaction_student_mapper`).once('value')
+    const snapshot = await get(ref(db, `/transaction_student_mapper`))
     return snapshot.val()
 }
 
