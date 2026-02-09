@@ -7,28 +7,28 @@
   "private": true,
   "scripts": {
     "start:local": "nodemon -r dotenv/config ./bin/www",
-    "start": "node ./bin/www",
+    "start": "node -r dotenv/config ./bin/www",
     "heroku:stop": "heroku ps:scale web=0",
     "heroku:start": "heroku ps:scale web=1"
   },
   "dependencies": {
-    "@google-cloud/storage": "^4.7.0",
-    "axios": "^0.19.2",
-    "connect-timeout": "^1.9.0",
-    "date-fns": "^2.13.0",
-    "debug": "^4.1.1",
-    "express": "^4.17.1",
-    "express-form-data": "^2.0.12",
-    "firebase": "^7.14.2",
-    "lodash": "^4.17.15",
-    "morgan": "^1.10.0",
-    "uuid": "^8.0.0"
+    "@google-cloud/storage": "^7.19.0",
+    "axios": "^1.13.5",
+    "connect-timeout": "^1.9.1",
+    "date-fns": "^4.1.0",
+    "debug": "^4.4.3",
+    "express": "^5.2.1",
+    "express-form-data": "^3.0.1",
+    "firebase": "^12.9.0",
+    "lodash": "^4.17.23",
+    "morgan": "^1.10.1",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "dotenv": "^8.2.0",
-    "nodemon": "^2.0.3"
+    "dotenv": "^17.2.4",
+    "nodemon": "^3.1.11"
   },
   "engines": {
-    "node": "12.x"
+    "node": "24.x"
   }
 }
