@@ -13,7 +13,17 @@ const insertRawS2S = async (s2s, now) => {
         const buff = Buffer.from(JSON.stringify(obj));
         const bufferStream = new stream.PassThrough();
         bufferStream.end(buff);
-        const file = bucket.file(`debug/raw-s2s/${now.getTime()}.json`);
+
+        const originalTransactionId = s2s?.unified_receipt?.latest_receipt_info?.[0]?.original_transaction_id;
+        const transactionId = s2s?.unified_receipt?.latest_receipt_info?.[0]?.transaction_id;
+
+        const filenameParts = [
+            now.getTime(),
+            originalTransactionId,
+            transactionId
+        ].filter(part => part != null).join('-');
+
+        const file = bucket.file(`debug/raw-s2s/${filenameParts}.json`);
         await new Promise( (resolutionFunc,rejectionFunc) => {
             bufferStream.pipe(file.createWriteStream({
                 metadata: {
